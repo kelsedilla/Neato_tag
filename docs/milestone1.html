@@ -2,9 +2,128 @@
 <html>
   <head>
     <title>Milestone 1</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      
+      header {
+        background: linear-gradient(135deg, #667eea 0%, #b37848 100%);
+        color: white;
+        padding: 40px 30px;
+        text-align: center;
+      }
+      
+      header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+      
+      .content {
+        padding: 40px 30px;
+      }
+      
+      h2 {
+        color: #667eea;
+        font-size: 1.8em;
+        margin-top: 35px;
+        margin-bottom: 15px;
+        border-left: 4px solid #667eea;
+        padding-left: 15px;
+      }
+      
+      h2:first-child {
+        margin-top: 0;
+      }
+      
+      p {
+        margin-bottom: 20px;
+        color: #555;
+        font-size: 1.05em;
+      }
+      
+      .image-container {
+        margin: 30px 0;
+        text-align: center;
+      }
+      
+      .image-container img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        margin-bottom: 10px;
+      }
+      
+      .image-caption {
+        font-style: italic;
+        color: #888;
+        font-size: 0.95em;
+      }
+      
+      @media (max-width: 600px) {
+        header h1 {
+          font-size: 2em;
+        }
+        
+        .content {
+          padding: 25px 20px;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>Milestone 1</h1>
-    <p>This is the page for Milestone 1.</p>
+    <div class="container">
+      <header>
+        <h1>Milestone 1</h1>
+      </header>
+      
+      <div class="content">
+        <h2>Localization Subteam</h2>
+        <p>The localization subteam's goal is to create a system that allows Neatos to track their own poses within a known map and then publish those poses, to later be shared with each other.</p>
+        
+        <p>For milestone 1, we did research and planning, tested the Neato's wheel odometry quality, created a map file, and identified an existing particle filter implementation from the AMCL robot localization package.</p>
+        
+        <h3>Research and Planning</h3>
+        <p>We considered several strategies for Neato localization, including a particle filter, wheel odometry, and visual odometry. We thought wheel odometry would be the easiest to implement, since an odom topic that tracks the Neato's pose already exists in our setup. However, we were concerned that the odometry would drift over time and not be accurate enough for our purposes. To test this, we test drove the Neato around and mapped its odometry output.</p>
+        
+        <div class="image-container">
+          <img src="images/mac2ndfloormap.png" alt="Map of the path the Neato took">
+        </div>
+        
+        <p>The figure above is a map of the path the Neato took. We started and ended at the exact same location; however, the odometry shows the start and end positions nearly a meter apart. This is not accurate enough, since games of Neato tag will likely be significantly longer than this test run, leading to even more drift. We decided to go with deploying a particle filter, because unlike odometry, particle filter results do not accumulate errors over time.</p>
+        
+        <h3>Map File</h3>
+        <p>Particle filters require a map of the space to work off of. To create a map, we used the ROS2 SLAM Toolbox. We selected a small area in the 2nd floor MAC that had several defining features to test with.</p>
+        
+        <div class="image-container">
+          <img src="images/odomtrajectory.png" alt="Map of Second Floor MAC between 213 and 218">
+          <p class="image-caption">Map of Second Floor MAC in Between 213 and 218</p>
+        </div>
+        
+        <h3>Next Steps</h3>
+        <p>Our next step is to deploy the ACML particle filter using this map file and test how accurate it is. This will also give us a sense of whether the MAC hallways have enough defining features for the particle filter to be able to accurately track the Neatos' locations. After that, we will reconvene with the rest of the team to discuss which features are priority to implement next.</p>
+      </div>
+    </div>
   </body>
 </html>
