@@ -23,6 +23,7 @@ setup(
     entry_points={
         'console_scripts': [
             'odom = neato_tag.odom:main'
+            'teleop = teleop:main'
         ],
     },
 )
