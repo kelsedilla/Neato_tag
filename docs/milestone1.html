@@ -130,10 +130,10 @@
         <h3>Coding for two Neatos</h3>
         <p>We quickly learned that the most important part of giving different instructions to multiple Neatos would be to ensure communication doesn’t get crossed. In a teleops program for one Neato, there will be a publisher to cmd_vel, to allow the computer to send velocity instructions to the Neato. In a teleops program for two Neatos, each Neato will need a separate publisher to cmd_vel that will publish that Neatos specific instructions.</p>
         <p>To prevent two cmd_vel publishers from getting crossed, they are differentiated by name spaces. So instead of:</p>
-        <p>self.vel_pub = self.create_publisher(Twist, ‘cmd_vel', 10)</p>
+        <p style="font-family:'Courier New'">self.vel_pub = self.create_publisher(Twist, ‘cmd_vel', 10)</p>
         <p>We do:</p>
-        <p>self.vel_pub1 = self.create_publisher(Twist, 'namespace1\cmd_vel', 10)</p>
-        <p>self.vel_pub2 = self.create_publisher(Twist, ‘namespace2\cmd_vel', 10)</p>
+        <p style="font-family:'Courier New'">self.vel_pub1 = self.create_publisher(Twist, 'namespace1\cmd_vel', 10)</p>
+        <p style="font-family:'Courier New'">self.vel_pub2 = self.create_publisher(Twist, ‘namespace2\cmd_vel', 10)</p>
         
         <p>We modified a single Neato teleops program to use two publishers. Keypresses on w,a,s,d all trigger vel_pub1, while keypresses on i,j,k,l all trigger vel_pub2.</p>
 
@@ -142,9 +142,6 @@
         <h3>Launching two Neatos</h3>
         
         </div>
-        
-        <h3>Next Steps</h3>
-        <p>Our next step is to deploy the ACML particle filter using this map file and test how accurate it is. This will also give us a sense of whether the MAC hallways have enough defining features for the particle filter to be able to accurately track the Neatos' locations. After that, we will reconvene with the rest of the team to discuss which features are priority to implement next.</p>
       </div>
     </div>
   </body>
