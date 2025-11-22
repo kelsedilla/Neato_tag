@@ -140,7 +140,18 @@
         <p>We have not been able to run this teleops on the Neatos yet, but we believe it will be a smooth process once we return from break.</p>
         
         <h3>Launching two Neatos</h3>
-        
+        <p>Instead of using the command:</p>
+        <p style="font-family:'Courier New'"> ros2 launch neato_node2 bringup.py host:=IP_OF_ROBOT </p>
+
+        <p>We run two launch commands:</p>
+        <p style="font-family:'Courier New'">ros2 launch neato_node2 bringup_multi.py host:=IP_OF_ROBOT1 robot_name:=namespace1 udp_video_port:=5002 udp_sensor_port:=7777</p>
+        <p style="font-family:'Courier New'">ros2 launch neato_node2 bringup_multi.py host:=IP_OF_ROBOT2 robot_name:=namespace2 udp_video_port:=5003 udp_sensor_port:=7778</p>
+
+        <p>When launching one Neato, bringup.py is used to automatically handle arguments such as udp_video_port, but when launching multiple Neatos, bringup_multi.py requires different arguments for each robot. This is why the command takes extra arguments. </p>
+        <p>By using these commands, we were able to successfully launch two neatos!</p>
+
+        <h3>Next Steps</h3>
+        <p>Our next steps are to run the teleop code when we return from break, then tag up with the other subteams and share what we’ve learned. </p>
         </div>
       </div>
     </div>
