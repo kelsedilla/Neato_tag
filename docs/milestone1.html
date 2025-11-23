@@ -152,6 +152,26 @@
 
         <h3>Next Steps</h3>
         <p>Our next steps are to run the teleop code when we return from break, then tag up with the other subteams and share what we’ve learned. </p>
+
+        <h2>Machine Vision Subteam</h2>
+        <p>The machine vision subteam’s goal is to create a program that utilizes the Neato's camera and LIDAR sensors to play tag. We are focused on being able to regognize and track a Neato with another Neato.</p>
+                
+        <h3>Research and Planning</h3>
+        <p>Our plan is to use either color detection or the YOLO computer vision algorithm to have the "it" Neato recognize another Neato. Then, once the Neato is recognized, we use SORT object tracking to determine where the other Neato has moved so the "it" Neato can chase. We also plan on using LIDAR data to determine the distance between the Neatos to more easily calculate trajectory.</p>
+        <p>Before we started implementation, we wanted to see how well the Neato LIDAR can detect another Neato. We discovered that the answer is not at all. To allow the "it" Neato's LIDAR to see the other Neato, we plan on dressing up the other Neato to raise it to the LIDAR's height. If we go through with this, we may use a bright color, which means we may change our machine vision algorithm to detect color rather than a Neato.</p>
+        
+        <h3>Creating Training Images</h3>
+        <p>If we do end up using YOLO, we require annotated images of Neatos. We spent some time taking 50 images from a Neato camera. Two are included below.</p>
+
+        <div class="image-container">
+          <img src="images/trainingimage1.png" alt="Example training image 1">
+          <img src="images/trainingimage2.png" alt="Example training image 2">
+        </div>
+
+        <p>We are thinking of pivoting to color detection due to the lack of contrast of the Neato versus the background. In the second picture, the Neato is only a couple of yards away, but it is still very hard to see. We think this would be less of an issue in a more robust training set, but then a lot of our time and effort would be put into taking and annotating images rather than working on our program. Color detection would use no training images, which would allow us to focus more on other aspects of the project.</p>
+
+        <h3>Next Steps</h3>
+        <p>Our next steps are to implement machine vision recognition and tracking. We plan on adapting the Neato Soccer code for color detection or following a YOLO tutorial if we go that route. We also plan on looking into SORT to follow an object. Once we get the machine vision working, we would then figure out how to get the Neato to actually chase the other Neato.</p>
         </div>
       </div>
     </div>
