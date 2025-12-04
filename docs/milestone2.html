@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Milestone 2</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
     <div class="container">
@@ -20,17 +20,13 @@
         <p>We created a map using ROS's SLAM toolbox. We did this last milestone, but this one is nicer and doesn't have any loop closure issues.</p>
         
         <div class="image-container">
-          <img src="images/MAC306Map.png" alt="Generated map outside of MAC 306">
-          <p class="image-caption">The generated map (outside of MAC 306). This map has only a few small holes and no loop closure issues.</p>
+          <img src="images/map-milestone2.png" alt="Generated map outside of MAC 206">
+          <p class="image-caption">The generated map (outside of MAC 206). This map has only a few small holes and no loop closure issues.</p>
         </div>
         
         <h3>Particle Filter</h3>
         <p>We ran the particle filter from ROS's AMCL package using the map we created and successfully localized a Neato as it drives around the map.</p>
         
-        <div class="image-container">
-          <img src="images/particle_filter.gif" alt="GIF of particle filter running.">
-        </div>
-
         <h3>Challenges</h3>
         <p>Multiple setup issues. Loading a map into rviz was challenging for the following reasons:</p>
         <ul>
