@@ -27,8 +27,8 @@ class TeleOp(Node):
         super().__init__('teleop')
         self.e_stop = Event()
         # create a thread to handle long-running component
-        self.vel_pub1 = self.create_publisher(Twist, 'neato1\cmd_vel', 10)
-        self.vel_pub2 = self.create_publisher(Twist, 'neato2\cmd_vel', 10)
+        self.vel_pub1 = self.create_publisher(Twist, 'neato1/cmd_vel', 10)
+        self.vel_pub2 = self.create_publisher(Twist, 'neato2/cmd_vel', 10)
         self.create_subscription(Bool, 'estop', self.handle_estop, 10)
         self.run_loop_thread = Thread(target=self.run_loop)
         self.run_loop_thread.start()
@@ -43,7 +43,8 @@ class TeleOp(Node):
         """ 
         if msg.data:
             self.e_stop.set()
-            self.drive(linear=0.0, angular=0.0)
+            self.drive(linear=0.0, angular=0.0, neato="neato1")
+            self.drive(linear=0.0, angular=0.0, neato="neato2")
 
     def run_loop(self):
         """
@@ -51,7 +52,8 @@ class TeleOp(Node):
         the user exits the program by pressing Ctrl-C.
         """
         # the first message on the publisher is often missed
-        self.drive(0.0, 0.0)
+        self.drive(0.0, 0.0, "neato1")
+        self.drive(0.0, 0.0, "neato2")
         sleep(1)
 
         current_facing = 0  # 0 = north, 1 = east, 2 = south, 3 = west
