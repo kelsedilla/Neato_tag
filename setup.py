@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'neato_tag'
+package_name = 'Neato_tag'
 
 setup(
     name=package_name,
@@ -13,17 +13,18 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='zara',
-    maintainer_email='themightyzc@gmail.com',
+    maintainer='bwager',
+    maintainer_email='bwager@olin.edu',
     description='TODO: Package description',
-    license='TODO: License declaration',
+    license='Apache-2.0',
     extras_require={
-        'test': ['pytest'],
+        'test': [
+            'pytest',
+        ],
     },
     entry_points={
         'console_scripts': [
-            'odom = neato_tag.odom:main'
-            'teleop = teleop:main'
+            'deepsort_tracking = Neato_tag.deepsort_tracking:main'
         ],
     },
 )
