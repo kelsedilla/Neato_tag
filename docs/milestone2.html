@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Milestone 2</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Milestone 2</h1>
+      </header>
+      
+      <div class="content">
+        <h2>Localization Subteam</h2>
+        
+        <h3>Goal</h3>
+        <p>The localization subteam's goal this week was to run the AMCL particle filter on a map we created.</p>
+        
+        <h3>Creating a Map - Improvements</h3>
+        <p>We created a map using ROS's SLAM toolbox. We did this last milestone, but this one is nicer and doesn't have any loop closure issues.</p>
+        
+        <div class="image-container">
+          <img src="images/map-milestone2.png" alt="Generated map outside of MAC 206">
+          <p class="image-caption">The generated map (outside of MAC 206). This map has only a few small holes and no loop closure issues.</p>
+        </div>
+        
+        <h3>Particle Filter</h3>
+        <p>We ran the particle filter from ROS's AMCL package using the map we created and successfully localized a Neato as it drives around the map.</p>
+        
+        <h3>Challenges</h3>
+        <p>Multiple setup issues. Loading a map into rviz was challenging for the following reasons:</p>
+        <ul>
+          <li>After exporting, the map says (result=0), implying that the yaml file is broken with no way to fix it.
+            <ul>
+              <li>Fix: although (result=0) implies that the yaml file is broken, this output is completely fine.</li>
+            </ul>
+          </li>
+          <li>The created map refused to load into Rviz
+            <ul>
+              <li>Fix: We used special configurations for the map to load: <span style="font-family:'Courier New'">rviz2 -d ~/ros2_ws/src/robot_localization/rviz/amcl.rviz</span></li>
+            </ul>
+          </li>
+        </ul>
+        
+        <h3>Next Steps</h3>
+        <p>Our next step is to implement the AMCL particle filter to two Neatos which both share the same map. This will require meeting with the Multi-Neato subteam to learn how to run programs that control two Neatos. We will then have to adapt their methods to run a separate particle filter for each of the two Neatos and publish both locations to rviz. After successfully tracking the positions of both Neatos through the particle filter, we can as a stretch goal for the next milestone work towards building the logic for the chasing Neato to tag the other Neato using the shared locations.</p>
+      </div>
+    </div>
+  </body>
+</html>
