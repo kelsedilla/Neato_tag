@@ -39,7 +39,6 @@ class TeleopNode(Node):
         """
 
         key = self.getKey()
-        neato = None
         # Define movement based on key press
         vel = Twist()
         if key == "w":
@@ -58,7 +57,7 @@ class TeleopNode(Node):
             vel.linear.x = 0.0
             vel.angular.z = -0.3
             neato = "neato1"
-        elif key == "c":
+        if key == "c":
             vel.linear.x = 0.0
             vel.angular.z = 0.0
             neato = "neato1"
