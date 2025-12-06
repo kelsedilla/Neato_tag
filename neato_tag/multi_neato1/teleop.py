@@ -175,6 +175,7 @@ def main():
     rclpy.init()
     teleop = TeleOp()
     rclpy.spin(teleop)
+    rclpy.shutdown()
 
 
 if __name__ == '__main__':
