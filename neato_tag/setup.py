@@ -23,6 +23,7 @@ setup(
     entry_points={
         'console_scripts': [
             'teleop = neato_tag.teleop:main'
+            'new_teleop = neato_tag.new_teleop:main'
         ],
     },
 )
