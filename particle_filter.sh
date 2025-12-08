@@ -12,18 +12,18 @@ neato_ip_2="192.168.16.${neato_ip_2_ending}"
 
 #Run terminal with neato ip 1
 gnome-terminal --title="First Neato" -- bash -c " 
-ros2 launch neato_node2 bringup_multi.py host:=$neato_ip_1 robot_name:=neato1 udp_video_port:=5002 udp_sensor_port:=7777
+ros2 launch neato_tag bringup_multi.py host:=$neato_ip_1 robot_name:=neato1 udp_video_port:=5002 udp_sensor_port:=7777
 ; exec bash"
 
 #run separate terminal neato ip 2
 gnome-terminal --title="Second Neato" -- bash -c " 
 echo $neato_ip_2
-ros2 launch neato_node2 bringup_multi.py host:=$neato_ip_2 robot_name:=neato2 udp_video_port:=5003 udp_sensor_port:=7778
+ros2 launch neato_tag bringup_multi.py host:=$neato_ip_2 robot_name:=neato2 udp_video_port:=5003 udp_sensor_port:=7778
 ; exec bash"
 
 #run neato tag teleop file
 gnome-terminal --title="Basic Teleop" -- bash -c "
-ros2 run neato_tag teleop; exec bash"
+ros2 run neato_tag teleop_multi_simple; exec bash"
 
 #Run special config
 gnome-terminal --title="Special Config for Ros" -- bash -c "
