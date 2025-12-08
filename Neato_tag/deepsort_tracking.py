@@ -43,11 +43,7 @@ class NeatoTracker(Node):
         self.should_move = False
 
         # create initial bounding box
-        self.bounding_box = None
-        self.confidence = 0
-        if not self.cv_image is None:
-            self.bounding_box = color_detection(self.cv_image)
-            self.confidence = 1
+        self.ltrb = None
 
         self.tracker = DeepSort(max_age=50)  # Initialize the DeepSORT tracker
 
@@ -64,35 +60,45 @@ class NeatoTracker(Node):
             We are using a separate thread to run the loop_wrapper to work around
             issues with single threaded executors in ROS2 """
         cv2.namedWindow('video_window')
-        print(f"confidence: {self.confidence}")
         if self.cv_image is None:
-            print("None") 
+            print("None")
         while True:
             self.run_loop()
             time.sleep(0.1)
 
-    def track_neato(self):
-        print(self.bounding_box)
-        if not self.bounding_box is None:
-            neato = self.tracker.update_tracks([[self.bounding_box, self.confidence, "color_detection"]], frame=self.cv_image)[0]
-            self.confidence = max(0, self.confidence - 0.001)
-            ltrb = neato.to_ltrb()
-            self.bounding_box = [int(ltrb[0]), int(ltrb[1]), int(ltrb[2]), int(ltrb[3])]
+    def track_neato(self, bounding_box):
+        if not bounding_box is None:
+            x = bounding_box[0]
+            y = bounding_box[1]
+            w = bounding_box[2] - bounding_box[0]
+            h = bounding_box[3] - bounding_box[1]
+
+            dets = [[[x, y, w, h], 1.0]]
+            tracks = self.tracker.update_tracks(dets, frame=self.cv_image)
+        else:
+            dets = np.empty((0, 5))
+            tracks = self.tracker.update_tracks(dets, frame=self.cv_image)
+        for i, track in enumerate(tracks):
+            if i == 0:
+                self.ltrb = track.to_ltrb()
+            if not track.is_confirmed():
+                continue
+            l, t, r, b = track.to_ltrb()
+            cv2.rectangle(self.cv_image, (int(l), int(t)), (int(r), int(b)), (255, 0, 0), 2)
 
     def run_loop(self):
         # NOTE: only do cv2.imshow and cv2.waitKey in this function
-        # if self.confidence > 0.99:
-        #     self.track_neato()
         if not self.cv_image is None:
-            self.bounding_box = color_detection(self.cv_image)
+            bounding_box = color_detection(self.cv_image)
+
+            self.track_neato(bounding_box)
             self.should_move = True
-        if not self.cv_image is None:
-            print(self.bounding_box)
             msg_cmd = Twist()
-            if not self.bounding_box is None:
-                xmin, ymin, xmax, ymax = self.bounding_box
-                self.center_x = (xmin + xmax) / 2.0
-                self.center_y = (ymin + ymax) / 2.0
+            print(self.ltrb)
+            if not self.ltrb is None:
+                l, t, r, b = self.ltrb
+                self.center_x = (l + r) / 2.0
+                self.center_y = (t + b) / 2.0
                 # normalize self.center_x to range roughly [-1, 1]
                 norm_x_pose = (self.center_x - (self.cv_image.shape[1] / 2.0)) / (self.cv_image.shape[1] / 2.0)
                 self.turn_direction = np.sign(-norm_x_pose)
@@ -103,11 +109,8 @@ class NeatoTracker(Node):
             elif self.should_move is True:
                 msg_cmd.linear.x = 0.1
                 msg_cmd.angular.z = self.turn_direction * 1.0
-                print(msg_cmd.angular.z)
             self.pub.publish(msg_cmd)
 
-            if not self.bounding_box is None:
-                cv2.rectangle(self.cv_image, (self.bounding_box[0], self.bounding_box[1]), (self.bounding_box[2], self.bounding_box[3]), (255, 0, 0), 3)
             cv2.imshow('video_window', self.cv_image)
             cv2.waitKey(5)
 
