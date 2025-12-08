@@ -70,10 +70,70 @@ def color_detection(image):
     return merged_box
 
 
-# image = cv2.imread(f"color-training-images/image0.png")
-# contours, mask, edges_closed = screen_detection(image)
+def convert_to_lidar_angles(bounding_box, img_width, hfov=120):
+    """
+    Convert a bounding box to left and right angles relative to the camera center.
+    bounding_box = [X1, Y1, X2, Y2]
+    """
+    if bounding_box is None:
+        return None
+
+    left_x = bounding_box[0]
+    right_x = bounding_box[2]
+
+    # Map pixels to angles relative to center
+    left_angle = ((left_x - img_width / 2) / (img_width / 2)) * (hfov / 2)
+    right_angle = ((right_x - img_width / 2) / (img_width / 2)) * (hfov / 2)
+
+    return left_angle, right_angle
+
+
+def draw_angle_markers(image, bounding_box, hfov=120):
+    img_height, img_width = image.shape[:2]
+    angles = convert_to_lidar_angles(bounding_box, img_width, hfov)
+    if angles is None:
+        return image
+
+    left_angle, right_angle = angles
+    left_x, top_y, right_x, bottom_y = bounding_box
+    center_x = (left_x + right_x) // 2
+
+    debug = image.copy()
+
+    cv2.line(debug, (left_x, 0), (left_x, img_height), (0, 255, 0), 2)
+    cv2.line(debug, (center_x, 0), (center_x, img_height), (0, 255, 255), 2)
+    cv2.line(debug, (right_x, 0), (right_x, img_height), (0, 0, 255), 2)
+
+    cv2.putText(
+        debug,
+        f"{left_angle:.1f}°",
+        (left_x, 30),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.7,
+        (0, 255, 0),
+        2,
+    )
+    cv2.putText(
+        debug,
+        f"{right_angle:.1f}°",
+        (max(right_x - 60, 0), 30),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.7,
+        (0, 0, 255),
+        2,
+    )
+    return debug
 
 
 # for i in range(0, 50):
 #     image = cv2.imread(f"color-training-images/image{i}.png")
-#     contours, mask, edges_closed = color_detection(image)
+#     bbox = color_detection(image)
+
+#     print(bbox)
+
+#     marked_image = draw_angle_markers(image, bbox)
+
+#     plt.imshow(cv2.cvtColor(marked_image, cv2.COLOR_BGR2RGB))
+#     plt.title("Bounding box with angle markers")
+#     plt.axis("off")
+#     plt.show()
