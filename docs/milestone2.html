@@ -72,7 +72,8 @@
         <p>One important mystery of this set up is that we currently don’t know how to specify which Neato a particle filter is running on using ros2’s particle filter package. This will be a very important question to solve, as we will need to specify which particle filter is running on which neato.</p>
         
         <h3>Next Steps</h3>
-        <p>Now that we have a plan for project structure, we will need to tag up with the whole team again and start writing and testing these files. We will also need to answer our multiple particle filters question.</p>
+        <p>Now that we have a plan for project structure, we will need to tag up with the whole team again and start writing and testing these files. We will also need to answer our question regarding multiple particle filters.</p>
+        <p>We are planning how to integrate our existing work into the final project structure. Our chase_logic node can use the neato’s locations on the world map (from the particle filter) to send Neato1 in the approximate direction of Neato 2, and use machine vision tracking to narrow in on Neato2 and improve chasing accuracy. The localization subteam is currently learning Bash scripting to be able to create a script that can run all nodes with one command. The multi-Neato subteam will probably spend a good part of the next milestone figuring out our multiple particle filter question, and ironing out other wrinkles that come from using multiple neatos.</p>
       </div>
     </div>
   </body>
