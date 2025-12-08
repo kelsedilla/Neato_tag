@@ -58,15 +58,15 @@ def color_detection(image):
 
         X1, Y1 = min(xs), min(ys)
         X2, Y2 = max(xe), max(ye)
-        merged_box = (X1, Y1, X2 - X1, Y2 - Y1)
+        merged_box = [X1, Y1, X2, Y2]
         cv2.rectangle(debug, (X1, Y1), (X2, Y2), (255, 0, 0), 3)
     else:
         merged_box = None
 
-    plt.imshow(cv2.cvtColor(debug, cv2.COLOR_BGR2RGB))
-    plt.title("Merged bounding rectangle")
-    plt.axis("off")
-    plt.show()
+    # plt.imshow(cv2.cvtColor(debug, cv2.COLOR_BGR2RGB))
+    # plt.title("Merged bounding rectangle")
+    # plt.axis("off")
+    # plt.show()
     return merged_box
 
 
@@ -74,6 +74,6 @@ def color_detection(image):
 # contours, mask, edges_closed = screen_detection(image)
 
 
-for i in range(0, 50):
-    image = cv2.imread(f"color-training-images/image{i}.png")
-    contours, mask, edges_closed = color_detection(image)
+# for i in range(0, 50):
+#     image = cv2.imread(f"color-training-images/image{i}.png")
+#     contours, mask, edges_closed = color_detection(image)

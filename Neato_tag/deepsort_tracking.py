@@ -11,6 +11,8 @@ import numpy as np
 from geometry_msgs.msg import Twist
 from deep_sort_realtime.deepsort_tracker import DeepSort  # Library for the DeepSORT tracker
 
+from Neato_tag.color_detection import color_detection
+
 RED_LOWER_BOUND = 0
 GREEN_LOWER_BOUND = 0
 BLUE_LOWER_BOUND = 0
@@ -37,7 +39,15 @@ class NeatoTracker(Node):
         self.pub = self.create_publisher(Twist, "cmd_vel", 10)
         self.center_x = 0
         self.center_y = 0
+        self.turn_direction = 1
         self.should_move = False
+
+        # create initial bounding box
+        self.bounding_box = None
+        self.confidence = 0
+        if not self.cv_image is None:
+            self.bounding_box = color_detection(self.cv_image)
+            self.confidence = 1
 
         self.tracker = DeepSort(max_age=50)  # Initialize the DeepSORT tracker
 
@@ -54,30 +64,51 @@ class NeatoTracker(Node):
             We are using a separate thread to run the loop_wrapper to work around
             issues with single threaded executors in ROS2 """
         cv2.namedWindow('video_window')
-        cv2.namedWindow('binary_window')
-        cv2.namedWindow('image_info')
+        print(f"confidence: {self.confidence}")
+        if self.cv_image is None:
+            print("None") 
         while True:
             self.run_loop()
             time.sleep(0.1)
 
+    def track_neato(self):
+        print(self.bounding_box)
+        if not self.bounding_box is None:
+            neato = self.tracker.update_tracks([[self.bounding_box, self.confidence, "color_detection"]], frame=self.cv_image)[0]
+            self.confidence = max(0, self.confidence - 0.001)
+            ltrb = neato.to_ltrb()
+            self.bounding_box = [int(ltrb[0]), int(ltrb[1]), int(ltrb[2]), int(ltrb[3])]
+
     def run_loop(self):
-        # NOTE: only do cv2.imshow and cv2.waitKey in this function 
+        # NOTE: only do cv2.imshow and cv2.waitKey in this function
+        # if self.confidence > 0.99:
+        #     self.track_neato()
         if not self.cv_image is None:
-            binary_image = cv2.inRange(self.cv_image, (BLUE_LOWER_BOUND,GREEN_LOWER_BOUND,RED_LOWER_BOUND), (BLUE_UPPER_BOUND,GREEN_UPPER_BOUND,RED_UPPER_BOUND))
-            print(self.cv_image.shape)
-            moments = cv2.moments(binary_image)
-            if moments['m00'] != 0:
-                self.center_x, self.center_y = moments['m10']/moments['m00'], moments['m01']/moments['m00']
-                # normalize self.center_x
-                norm_x_pose = (self.center_x - self.cv_image.shape[1]/2) / self.cv_image.shape[1]
+            self.bounding_box = color_detection(self.cv_image)
+            self.should_move = True
+        if not self.cv_image is None:
+            print(self.bounding_box)
+            msg_cmd = Twist()
+            if not self.bounding_box is None:
+                xmin, ymin, xmax, ymax = self.bounding_box
+                self.center_x = (xmin + xmax) / 2.0
+                self.center_y = (ymin + ymax) / 2.0
+                # normalize self.center_x to range roughly [-1, 1]
+                norm_x_pose = (self.center_x - (self.cv_image.shape[1] / 2.0)) / (self.cv_image.shape[1] / 2.0)
+                self.turn_direction = np.sign(-norm_x_pose)
                 # create message pose (stopped, else move towards target)
-                msg_cmd = Twist()
                 if self.should_move is True:
                     msg_cmd.linear.x = 0.1
                     msg_cmd.angular.z = -norm_x_pose
-                self.pub.publish(msg_cmd)
+            elif self.should_move is True:
+                msg_cmd.linear.x = 0.1
+                msg_cmd.angular.z = self.turn_direction * 1.0
+                print(msg_cmd.angular.z)
+            self.pub.publish(msg_cmd)
+
+            if not self.bounding_box is None:
+                cv2.rectangle(self.cv_image, (self.bounding_box[0], self.bounding_box[1]), (self.bounding_box[2], self.bounding_box[3]), (255, 0, 0), 3)
             cv2.imshow('video_window', self.cv_image)
-            cv2.imshow('binary_window', binary_image)
             cv2.waitKey(5)
 
 def main(args=None):
