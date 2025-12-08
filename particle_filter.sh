@@ -22,13 +22,13 @@ ros2 launch neato_node2 bringup_multi.py host:=$neato_ip_2 robot_name:=neato2 ud
 ; exec bash"
 
 #run neato tag teleop file
-gnome-terminal --title = "Basic Teleop" -- bash -c "
+gnome-terminal --title="Basic Teleop" -- bash -c "
 ros2 run neato_tag teleop; exec bash"
 
 #Run special config
-gnome-terminal --title = "Special Config for Ros" -- bash -c"
-rviz2 -d ~/ros2_ws/src/robot_localization/rviz/amcl.rviz; exec bash"
+gnome-terminal --title="Special Config for Ros" -- bash -c "
+rviz2 -d ~/ros2_ws/src/robot_localization/rviz/amcl.rviz namespace:=neato1; exec bash"
 
 #Run particle filter
-gnome-terminal --title "Ros2 Particle Filter" -- bash -c"
-ros2 launch robot_localization test_amcl.py map_yaml:=/ros2_ws/src/Neato_tag/maps/classroom2.yaml; exec bash"
+gnome-terminal --title="Ros2 Particle Filter" -- bash -c "
+ros2 launch robot_localization test_amcl.py map_yaml:=/ros2_ws/src/Neato_tag/maps/classroom2.yaml namespace:=neato1; exec bash"
