@@ -31,8 +31,8 @@ rviz2 -d ~/ros2_ws/src/robot_localization/rviz/amcl.rviz; exec bash"
 
 #Run particle filter
 gnome-terminal --tab --title="Ros2 Particle Filter" -- bash -c "
-ros2 launch robot_localization test_amcl.py robot_name:=neato1 map_yaml:=/ros2_ws/src/Neato_tag/maps/classroom2.yaml; exec bash"
+ros2 launch neato_tag test_amcl.py robot_name:=neato1 map_yaml:=/ros2_ws/src/Neato_tag/maps/classroom2.yaml; exec bash"
 
 #Run particle filter Neato 2
 gnome-terminal --tab --title="Ros2 Particle Filter" -- bash -c "
-ros2 launch robot_localization test_amcl.py robot_name:=neato2 map_yaml:=/ros2_ws/src/Neato_tag/maps/classroom2.yaml; exec bash"
+ros2 launch neato_tag test_amcl.py robot_name:=neato2 map_yaml:=/ros2_ws/src/Neato_tag/maps/classroom2.yaml; exec bash"

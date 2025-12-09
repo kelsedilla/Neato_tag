@@ -1,0 +1,47 @@
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import IncludeLaunchDescription
+from launch_ros.actions import Node, PushRosNamespace
+from launch.substitutions import LaunchConfiguration
+import os
+
+def generate_launch_description():
+    map_file = DeclareLaunchArgument('map_yaml')
+
+    lifecycle_nodes_built_in = ['map_server', 'amcl']
+    use_sim_time = DeclareLaunchArgument('use_sim_time', default_value="true")
+    autostart = True
+
+    robot_name = LaunchConfiguration('robot_name')
+    # robot_name_command = DeclareLaunchArgument('robot_name', default_value='')
+
+    start_lifecycle_manager_built_in = Node(
+            package='nav2_lifecycle_manager',
+            executable='lifecycle_manager',
+            name='lifecycle_manager',
+            output='screen',
+            emulate_tty=True,  # https://github.com/ros2/launch/issues/188
+            parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')},
+                        {'autostart': autostart},
+                        {'node_names': lifecycle_nodes_built_in}])
+
+    return LaunchDescription([
+        map_file,
+        use_sim_time,
+        PushRosNamespace(namespace=robot_name),
+        Node(
+            package='nav2_map_server',
+            executable='map_server',
+            name='map_server',
+            parameters=[{"yaml_filename": LaunchConfiguration('map_yaml')}],
+            output='screen'
+        ),
+        Node(package='nav2_amcl',
+             executable='amcl',
+             name='amcl',
+             parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
+             output='screen'),
+        start_lifecycle_manager_built_in,
+    ])
