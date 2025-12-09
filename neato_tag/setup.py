@@ -11,6 +11,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name, ['launch/bringup_multi.py']),
+        ('share/' + package_name, ['launch/test_amcl.py']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
