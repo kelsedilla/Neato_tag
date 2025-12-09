@@ -75,6 +75,50 @@
         <p>Now that we have a plan for project structure, we will need to tag up with the whole team again and start writing and testing these files. We will also need to answer our question regarding multiple particle filters.</p>
         <p>We are planning how to integrate our existing work into the final project structure. Our chase_logic node can use the neato’s locations on the world map (from the particle filter) to send Neato1 in the approximate direction of Neato 2, and use machine vision tracking to narrow in on Neato2 and improve chasing accuracy. The localization subteam is currently learning Bash scripting to be able to create a script that can run all nodes with one command. The multi-Neato subteam will probably spend a good part of the next milestone figuring out our multiple particle filter question, and ironing out other wrinkles that come from using multiple neatos.</p>
       </div>
+      <div class="content">
+        <h2>Machine Vision Subteam</h2>
+        
+        <h3>Goal</h3>
+        <p>Our goal for milestone 2 was to complete our machine vision pipeline.</p>
+
+        <h3>Machine Vision Pipeline</h3>
+        <p>Our machine vision pipeline goal is to be able extract and return the bounding box of a specified color in an image, in our case neon pink.</p>
+        <div class="image-container">
+          <img src="images/color_detection.png" alt="Bounding box around neaon pink area">
+        </div>
+        <ul>
+          <li><strong>Convert to HSV:</strong> Transform the input image from BGR to HSV for better object detection</li>
+          <li><strong>Make Color Threshold:</strong> Convert the target color <code>RGB(221,101,121)</code> to HSV and define a small range around it for detection</li>
+          <li><strong>Create a Color Mask:</strong> Use <code>cv2.inRange</code> to isolate pixels within the target pink range</li>
+          <li><strong>Edge Detection:</strong> Apply Canny edge detection to highlight boundaries of the detected regions</li>
+          <li><strong>Morphological Closing:</strong> Close small gaps in edges to improve contour stability</li>
+          <li><strong>Find and Filter Contours:</strong> Extract contours and discard small noisy ones (area &lt; 50 pixels)</li>
+          <li><strong>Merge Contours:</strong> Combine all detected contours into a single bounding rectangle</li>
+          <li><strong>Return Bounding Box:</strong> Output the coordinates <code>[X1, Y1, X2, Y2]</code>, or <code>None</code> if nothing is detected</li>
+       </ul>
+       <h3>Machine Neato Tag Pipeline</h3>
+       <p>After we finished our machine vision pipeline, we made our initial chaser robot logic. This does not yet have the bump sensor logic implemented.</p>
+        <ul>
+            <li><strong>Gets image:</strong> Subscribes to the camera topic (<code>camera/image_raw</code>) and stores the latest image in <code>self.cv_image</code>.</li>
+            <li><strong>Color Detection:</strong> Runs <code>color_detection</code> on each image to find the neon-pink object and get a bounding box</li>
+            <li><strong>Bounding Box Processing:</strong> 
+                <ul>
+                    <li>Computes the center of the bounding box</li>
+                    <li>Converts the bounding box to approximate angles using <code>convert_to_lidar_angles</code></li>
+                    <li>Determines the turn direction for the robot to face the target</li>
+                </ul>
+            </li>
+            <li><strong>Send Velocity Commands to Neato</strong> 
+                <ul>
+                    <li>If the Neato is detected, the Neato moves forward and turns proportionally to the target angle</li>
+                    <li>If not detected, the Neato slowly rotates in the last known turn direction to search for the other Neato</li>
+                </ul>
+            </li>
+        </ul>
+        <p>This pipeline loops over and over again to make the chaser Neato track and follow the chasee Neato</p>
+        <h3>Next Steps</h3>
+        <p>Our next steps are to add in the bump detection logic and run a full game of Neato tag with our autonomous chaser Neato and teleop-ed chasee Neato. We have also done some work on using the SORT algorithm and hope to implement that into our code. We may investigate some of our other stretch goals like creating an autonomous chasee Neato. This will require us to integrate with the other subteams and we plan to coordinate with them.</p>
+      </div>
     </div>
   </body>
 </html>
