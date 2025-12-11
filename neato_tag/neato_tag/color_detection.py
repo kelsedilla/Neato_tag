@@ -70,11 +70,7 @@ def color_detection(image):
     return merged_box
 
 
-def convert_to_lidar_angles(bounding_box, img_width, hfov=120):
-    """
-    Convert a bounding box to left and right angles relative to the camera center.
-    bounding_box = [X1, Y1, X2, Y2]
-    """
+def convert_to_heading_angle(bounding_box, img_width, hfov=120):
     if bounding_box is None:
         return None
 
@@ -84,44 +80,53 @@ def convert_to_lidar_angles(bounding_box, img_width, hfov=120):
     # Map pixels to angles relative to center
     left_angle = ((left_x - img_width / 2) / (img_width / 2)) * (hfov / 2)
     right_angle = ((right_x - img_width / 2) / (img_width / 2)) * (hfov / 2)
+    center_angle = (left_angle + right_angle) / 2
+    return center_angle
 
-    return left_angle, right_angle
+
+# Functions below are for debugging
 
 
 def draw_angle_markers(image, bounding_box, hfov=120):
-    img_height, img_width = image.shape[:2]
-    angles = convert_to_lidar_angles(bounding_box, img_width, hfov)
-    if angles is None:
+    if bounding_box is None:
         return image
 
-    left_angle, right_angle = angles
+    img_height, img_width = image.shape[:2]
+
+    # get center angle
+    center_angle = convert_to_heading_angle(bounding_box, img_width, hfov)
+    if center_angle is None:
+        return image
+
     left_x, top_y, right_x, bottom_y = bounding_box
     center_x = (left_x + right_x) // 2
 
     debug = image.copy()
 
-    cv2.line(debug, (left_x, 0), (left_x, img_height), (0, 255, 0), 2)
-    cv2.line(debug, (center_x, 0), (center_x, img_height), (0, 255, 255), 2)
-    cv2.line(debug, (right_x, 0), (right_x, img_height), (0, 0, 255), 2)
+    cv2.rectangle(debug, (left_x, top_y), (right_x, bottom_y), (0, 255, 0), 2)
+
+    cv2.line(
+        debug,
+        (center_x, 0),
+        (center_x, img_height),
+        (0, 255, 0),  # green line
+        2,
+    )
+
+    angle_text = f"{center_angle:.1f}°"
+    text_x = max(center_x - 40, 0)
+    text_y = max(top_y - 10, 30)
 
     cv2.putText(
         debug,
-        f"{left_angle:.1f}°",
-        (left_x, 30),
+        angle_text,
+        (text_x, text_y),
         cv2.FONT_HERSHEY_SIMPLEX,
-        0.7,
+        0.8,
         (0, 255, 0),
         2,
     )
-    cv2.putText(
-        debug,
-        f"{right_angle:.1f}°",
-        (max(right_x - 60, 0), 30),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.7,
-        (0, 0, 255),
-        2,
-    )
+
     return debug
 
 
@@ -138,3 +143,6 @@ def check_color_detection():
         plt.title("Bounding box with angle markers")
         plt.axis("off")
         plt.show()
+
+
+check_color_detection()
