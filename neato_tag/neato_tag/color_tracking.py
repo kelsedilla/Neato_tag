@@ -11,8 +11,8 @@ import cv2
 import numpy as np
 from geometry_msgs.msg import Twist
 
-from Neato_tag.color_detection import color_detection
-from Neato_tag.color_detection import convert_to_lidar_angles
+from color_detection import color_detection
+from color_detection import convert_to_lidar_angles
 
 RED_LOWER_BOUND = 0
 GREEN_LOWER_BOUND = 0
@@ -100,12 +100,7 @@ class NeatoTracker(Node):
                 center_angle = (left_angle + right_angle) / 2
                 self.center_x = (xmin + xmax) / 2.0
                 self.center_y = (ymin + ymax) / 2.0
-                # # normalize self.center_x to range roughly [-1, 1]
-                # norm_x_pose = (self.center_x - (self.cv_image.shape[1] / 2.0)) / (
-                #     self.cv_image.shape[1] / 2.0
-                # )
                 self.turn_direction = np.sign(-center_angle)
-                # create message pose (stopped, else move towards target)
                 if self.should_move is True:
                     msg_cmd.linear.x = 0.5
                     msg_cmd.angular.z = -center_angle * 0.03

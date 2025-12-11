@@ -125,15 +125,16 @@ def draw_angle_markers(image, bounding_box, hfov=120):
     return debug
 
 
-# for i in range(0, 50):
-#     image = cv2.imread(f"color-training-images/image{i}.png")
-#     bbox = color_detection(image)
+def check_color_detection():
+    for i in range(0, 50):
+        image = cv2.imread(f"color-training-images/image{i}.png")
+        bbox = color_detection(image)
 
-#     print(bbox)
+        print(bbox)
 
-#     marked_image = draw_angle_markers(image, bbox)
+        marked_image = draw_angle_markers(image, bbox)
 
-#     plt.imshow(cv2.cvtColor(marked_image, cv2.COLOR_BGR2RGB))
-#     plt.title("Bounding box with angle markers")
-#     plt.axis("off")
-#     plt.show()
+        plt.imshow(cv2.cvtColor(marked_image, cv2.COLOR_BGR2RGB))
+        plt.title("Bounding box with angle markers")
+        plt.axis("off")
+        plt.show()
