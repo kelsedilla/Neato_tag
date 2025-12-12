@@ -27,7 +27,6 @@ class TeleopNode(Node):
         self.timer = self.create_timer(timer_period, self.run_loop)
 
         # Create the publisher for cmd_vel that tells the motors to move.
-        self.publisher1 = self.create_publisher(Twist, "neato1/cmd_vel", 10)
         self.publisher2 = self.create_publisher(Twist, "neato2/cmd_vel", 10)
         # Define getKey() settings
         self.settings = termios.tcgetattr(sys.stdin)
@@ -42,7 +41,6 @@ class TeleopNode(Node):
         if key == "w":
             vel.linear.x = 0.3
             vel.angular.z = 0.0
-            neato = "neato1"
         elif key == "s":
             vel.linear.x = -0.3
             vel.angular.z = 0.0
@@ -50,42 +48,17 @@ class TeleopNode(Node):
         elif key == "a":
             vel.linear.x = 0.0
             vel.angular.z = 0.3
-            neato = "neato1"
         elif key == "d":
             vel.linear.x = 0.0
             vel.angular.z = -0.3
-            neato = "neato1"
         elif key == "c":
             vel.linear.x = 0.0
             vel.angular.z = 0.0
-            neato = "neato1"
-        elif key == "i":
-            vel.linear.x = 0.3
-            vel.angular.z = 0.0
-            neato = "neato2"
-        elif key == "k":
-            vel.linear.x = -0.3
-            vel.angular.z = 0.0
-            neato = "neato2"
-        elif key == "j":
-            vel.linear.x = 0.0
-            vel.angular.z = 0.3
-            neato = "neato2"
-        elif key == "l":
-            vel.linear.x = 0.0
-            vel.angular.z = -0.3
-            neato = "neato2"
-        elif key == "b":
-            vel.linear.x = 0.0
-            vel.angular.z = 0.0
-            neato = "neato2"
         elif key == "\x03":
             quit()
 
-        if neato == "neato1":
-            self.publisher1.publish(vel)
-        elif neato == "neato2":
-            self.publisher2.publish(vel)
+        
+        self.publisher2.publish(vel)
         key = None
 
     def getKey(self):
