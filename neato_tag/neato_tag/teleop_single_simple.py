@@ -44,20 +44,18 @@ class TeleopNode(Node):
         elif key == "s":
             vel.linear.x = -0.3
             vel.angular.z = 0.0
-            neato = "neato1"
         elif key == "a":
             vel.linear.x = 0.0
-            vel.angular.z = 0.3
+            vel.angular.z = 0.5
         elif key == "d":
             vel.linear.x = 0.0
-            vel.angular.z = -0.3
+            vel.angular.z = -0.5
         elif key == "c":
             vel.linear.x = 0.0
             vel.angular.z = 0.0
         elif key == "\x03":
             quit()
 
-        
         self.publisher2.publish(vel)
         key = None
 
