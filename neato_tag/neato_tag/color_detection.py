@@ -4,16 +4,17 @@ import numpy as np
 import os
 
 
-def color_detection(image):
+def color_detection(image, neato=None):
     """
     Detects edges around a specific neon-pink color (RGB 221,101,121)
     and shows debug plots at each stage.
     """
-    MIN_AREA = 50
-    TOLERANCE = 15  # how much +/- to allow around the sample pixel
-
-    # Sample pixel RGB (e.g., from a color picker or known sample)
-    sample_rgb = np.array([141, 55, 77])  # neon pink example
+    MIN_AREA = 20
+    TOLERANCE = 20
+    if neato == "neato2":
+        sample_rgb = np.array([187, 60, 89])
+    else:
+        sample_rgb = np.array([187, 60, 89])
 
     # Compute lower and upper bounds safely
     lower_bound = np.maximum(sample_rgb - TOLERANCE, 0)
@@ -52,15 +53,23 @@ def color_detection(image):
         xs, ys, xe, ye = [], [], [], []
         for cnt in contours:
             x, y, w, h = cv2.boundingRect(cnt)
+            # contour_crop = image[y : y + h, x : x + w].copy()
             xs.append(x)
             ys.append(y)
             xe.append(x + w)
             ye.append(y + h)
+            # plt.imshow(cv2.cvtColor(contour_crop, cv2.COLOR_BGR2RGB))
+            # plt.axis("off")
+            # plt.show()
 
         X1, Y1 = min(xs), min(ys)
         X2, Y2 = max(xe), max(ye)
         merged_box = [X1, Y1, X2, Y2]
         cv2.rectangle(debug, (X1, Y1), (X2, Y2), (255, 0, 0), 3)
+        # plt.imshow(cv2.cvtColor(debug, cv2.COLOR_BGR2RGB))
+        # plt.title("Merged bounding rectangle")
+        # plt.axis("off")
+        # plt.show()
     else:
         merged_box = None
 
@@ -144,3 +153,6 @@ def check_color_detection():
         plt.title("Bounding box with angle markers")
         plt.axis("off")
         plt.show()
+
+
+# check_color_detection()

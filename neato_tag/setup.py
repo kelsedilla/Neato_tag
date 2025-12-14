@@ -25,7 +25,10 @@ setup(
         "console_scripts": [
             "teleop = neato_tag.teleop:main",
             "teleop_multi_simple = neato_tag.teleop_multi_simple:main",
-            "color_tracking = Neato_tag.color_tracking:main",
+            "color_tracking = neato_tag.color_tracking:main",
+            "teleop_single_simple = neato_tag.teleop_single_simple:main",
+            "teleop_single_swap = neato_tag.teleop_single_swap:main",
+            "color_tracking_swap = neato_tag.color_tracking_swap:main",
         ],
     },
 )

@@ -12,6 +12,7 @@ import numpy as np
 from geometry_msgs.msg import Twist
 from neato2_interfaces.msg import Bump
 from rclpy.qos import qos_profile_sensor_data
+from std_msgs.msg import Empty
 
 from neato_tag.color_detection import color_detection
 from neato_tag.color_detection import convert_to_heading_angle
@@ -32,31 +33,57 @@ class NeatoTracker(Node):
     the object in the center of the camera's field of view.
     """
 
-    def __init__(self, image_topic):
+    def __init__(self):
         """Initialize the NeatoTracker"""
         super().__init__("neato_tracker")
         self.cv_image = None  # the latest image from the camera
         self.bridge = CvBridge()  # used to convert ROS messages to OpenCV
 
-        self.create_subscription(Image, image_topic, self.process_image, 10)
-        self.create_subscription(
-            Bump, "/neato1/bump", self.process_bump, qos_profile=qos_profile_sensor_data
+        self.swap_pub = self.create_publisher(
+            Empty,
+            "/swap_roles",
+            qos_profile=qos_profile_sensor_data,
         )
 
-        self.pub = self.create_publisher(Twist, "neato1/cmd_vel", 10)
+        self.roles = {"color_tracking": "neato1", "teleop": "neato2"}
+
         self.bump_time = None
         self.bump_duration = 5.0
-        self.turn_direction = 1
+        self.turn_direction = 1.0
         self.should_move = True
-
+        self.setup()
         # create initial bounding box
         self.bounding_box = None
         if not self.cv_image is None:
             self.bounding_box = color_detection(self.cv_image)
 
         self.create_timer(0.1, self.run_loop)
-        # thread = Thread(target=self.loop_wrapper)
-        # thread.start()
+
+    def setup(self):
+        if hasattr(self, "image_sub"):
+            self.destroy_subscription(self.image_sub)
+            self.destroy_subscription(self.bump_sub)
+            self.destroy_publisher(self.pub)
+
+        neato = self.roles["color_tracking"]
+        self.image_sub = self.create_subscription(
+            Image, f"/{neato}/camera/image_raw", self.process_image, 10
+        )
+        self.bump_sub = self.create_subscription(
+            Bump,
+            f"/{neato}/bump",
+            self.process_bump,
+            qos_profile=qos_profile_sensor_data,
+        )
+
+        self.pub = self.create_publisher(Twist, f"/{neato}/cmd_vel", 10)
+
+    def swap(self):
+        self.roles["color_tracking"], self.roles["teleop"] = (
+            self.roles["teleop"],
+            self.roles["color_tracking"],
+        )
+        self.setup()
 
     def process_image(self, msg):
         """Process image messages from ROS and stash them in an attribute
@@ -66,27 +93,21 @@ class NeatoTracker(Node):
     def process_bump(self, msg):
         """Trigger stop and start debounce timer."""
         if msg.left_front or msg.right_front:
-            print("Bump detected! Stopping")
+            print("Bump detected! Swapping")
+            self.swap_pub.publish(Empty())
+            self.swap()
+            self.cv_image = None
+            self.bounding_box = None
             self.should_move = False
             self.bump_time = time.time()
+
+            print(self.roles)
 
             # immediately publish stop command
             stop_cmd = Twist()
             stop_cmd.linear.x = 0.0
             stop_cmd.angular.z = 0.0
             self.pub.publish(stop_cmd)
-
-    # def loop_wrapper(self):
-    #     """This function takes care of calling the run_loop function repeatedly.
-    #     We are using a separate thread to run the loop_wrapper to work around
-    #     issues with single threaded executors in ROS2"""
-    #     # cv2.namedWindow("video_window")
-    #     while True:
-    #         if self.cv_image is None:
-    #             print("None")
-    #         else:
-    #             self.run_loop()
-    #             time.sleep(0.1)
 
     def run_loop(self):
         if self.cv_image is None:
@@ -98,11 +119,14 @@ class NeatoTracker(Node):
             if elapsed >= self.bump_duration:
                 self.should_move = True
                 self.bump_time = None
-                print("Resuming movement")
+                # print("Resuming movement")
         if self.should_move:
-            print("SHOULD MOVE")
-            self.bounding_box = color_detection(self.cv_image)
+            # print("SHOULD MOVE")
+            self.bounding_box = color_detection(
+                self.cv_image, neato=self.roles["color_tracking"]
+            )
             if self.bounding_box is not None:
+                print(self.bounding_box)
                 # This commented out section is to show the bounding box in video for debugging
                 # cv2.rectangle(
                 #     self.cv_image,
@@ -116,25 +140,28 @@ class NeatoTracker(Node):
                 )
                 print(f"CENTER ANGLE: {center_angle}")
                 self.turn_direction = np.sign(-center_angle)
-                msg_cmd.linear.x = 0.5
+                msg_cmd.linear.x = 1.4
                 msg_cmd.angular.z = -center_angle * 0.03
+                print(f"speed: {msg_cmd.linear.x}")
             else:
+                if self.turn_direction == 0.0:
+                    self.turn_direction = 1.0
                 msg_cmd.linear.x = 0.1
                 msg_cmd.angular.z = self.turn_direction * 1.0
         else:
-            print("SHOULD NOT MOVE")
+            # print("SHOULD NOT MOVE")
             msg_cmd.linear.x = 0.0
             msg_cmd.angular.z = 0.0
         # This commented out section is to show the video feed with the bounding box for debugging
         # cv2.imshow("video_window", self.cv_image)
         # cv2.waitKey(5)
-        print(msg_cmd)
+        # print(msg_cmd)
         self.pub.publish(msg_cmd)
 
 
 def main(args=None):
     rclpy.init()
-    n = NeatoTracker("neato1/camera/image_raw")
+    n = NeatoTracker()
     try:
         rclpy.spin(n)
     finally:
