@@ -11,7 +11,7 @@ def generate_launch_description():
     map_file = DeclareLaunchArgument('map_yaml')
 
     lifecycle_nodes_built_in = ['map_server', 'amcl']
-    use_sim_time = DeclareLaunchArgument('use_sim_time', default_value="true")
+    use_sim_time = DeclareLaunchArgument('use_sim_time', default_value="false")
     autostart = True
 
     robot_name = LaunchConfiguration('robot_name')
