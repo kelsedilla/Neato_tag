@@ -54,7 +54,7 @@ def generate_launch_description():
             ),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([interfaces_launch_file_dir, '/robot_state_publisher.py']),
-                launch_arguments={'tf_prefix': robot_name, 'use_sim_time': 'true'}.items()
+                launch_arguments={'tf_prefix': robot_name, 'use_sim_time': 'false'}.items()
             ),
             Node(
                 package='neato_node2',
