@@ -6,17 +6,18 @@ import os
 
 def color_detection(image, neato=None):
     """
-    Detects edges around a specific neon-pink color (RGB 221,101,121)
-    and shows debug plots at each stage.
+    Detects bounding box of a specified color in an image and returns it
     """
     MIN_AREA = 20
     TOLERANCE = 20
+
+    # If the neato is neato2, use its specific color, otherwise use neato1's
     if neato == "neato2":
         sample_rgb = np.array([187, 60, 89])
     else:
         sample_rgb = np.array([187, 60, 89])
 
-    # Compute lower and upper bounds safely
+    # Compute lower and upper bounds
     lower_bound = np.maximum(sample_rgb - TOLERANCE, 0)
     upper_bound = np.minimum(sample_rgb + TOLERANCE, 255)
 
@@ -30,25 +31,32 @@ def color_detection(image, neato=None):
     # plt.axis("off")
     # plt.show()
 
+    # Detect edges
     edges = cv2.Canny(mask, 50, 150)
     # plt.imshow(edges, cmap="gray")
     # plt.title("Canny edges")
     # plt.axis("off")
     # plt.show()
 
+    # Close any edges
     edges_closed = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
     # plt.imshow(edges_closed, cmap="gray")
     # plt.title("Edges (closed)")
     # plt.axis("off")
     # plt.show()
 
+    # Find contours
     contours, _ = cv2.findContours(
         edges_closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
     )
 
     debug = image.copy()
+
+    # Keep contours larger than the minimum area
     contours = [c for c in contours if cv2.contourArea(c) >= MIN_AREA]
 
+    # If there are still contours remaining, merge them together to form
+    # a larger rectangle
     if len(contours) > 0:
         xs, ys, xe, ye = [], [], [], []
         for cnt in contours:
@@ -70,6 +78,7 @@ def color_detection(image, neato=None):
         # plt.title("Merged bounding rectangle")
         # plt.axis("off")
         # plt.show()
+    # If no contours remain, return set mergged_box to None
     else:
         merged_box = None
 
@@ -81,6 +90,9 @@ def color_detection(image, neato=None):
 
 
 def convert_to_heading_angle(bounding_box, img_width, hfov=120):
+    """
+    Convert and get angle of center of bounding box
+    """
     if bounding_box is None:
         return None
 
