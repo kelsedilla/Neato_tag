@@ -10,17 +10,17 @@ import termios
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
-from std_msgs.msg import String
 
 
 class TeleopNode(Node):
-    """Teleoperation node to control a neato with the user's keyboard inputs.
+    """
+    Teleoperation node to control a neato with the user's keyboard inputs.
     WS controls forward and backward, AD rotate the robot in place.
     """
 
     def __init__(self):
         """Initializes the class."""
-        super().__init__("teleopNode")
+        super().__init__("teleop_node")
 
         # Timer for motors
         timer_period = 0.1
@@ -35,7 +35,6 @@ class TeleopNode(Node):
         """Key commands for teleoperation robot control"""
 
         key = self.getKey()
-        neato = None
         # Define movement based on key press
         vel = Twist()
         if key == "w":

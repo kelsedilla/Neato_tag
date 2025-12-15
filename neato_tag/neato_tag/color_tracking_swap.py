@@ -227,6 +227,9 @@ class NeatoTrackerSwap(Node):
 
 
 def main(args=None):
+    """
+    Initialize, run, and cleanup
+    """
     rclpy.init()
     neato = NeatoTrackerSwap()
     try:
