@@ -9,7 +9,7 @@ Play tag using two Neato vacuum robots. One is the runnner and can be controlled
 ## Running the Code
 
 First, build.
-- ```colcon build --symlink-install --packages-select neato_node2 neato_tag```
+- ```colcon build --symlink-install --packages-select neato_tag```
 - ```source ~/ros2_ws/install/setup.bash```
 
 Then run:

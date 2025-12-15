@@ -46,7 +46,7 @@
         <p>We considered several strategies for Neato localization, including a particle filter, wheel odometry, and visual odometry. We thought wheel odometry would be the easiest to implement, since an odom topic that tracks the Neato's pose already exists in our setup. However, we were concerned that the odometry would drift over time and not be accurate enough for our purposes. To test this, we test drove the Neato around and mapped its odometry output.</p>
         
         <div class="image-container">
-          <img src="images/mac2ndfloormap.png" alt="Map of the path the Neato took">
+          <img src="images/odomtrajectory.png" alt="Map of the path the Neato took">
         </div>
         
         <p>The figure above is a map of the path the Neato took. We started and ended at the exact same location; however, the odometry shows the start and end positions nearly a meter apart. This is not accurate enough, since games of Neato tag will likely be significantly longer than this test run, leading to even more drift. We decided to go with deploying a particle filter, because unlike odometry, particle filter results do not accumulate errors over time.</p>
@@ -55,7 +55,7 @@
         <p>Particle filters require a map of the space to work off of. To create a map, we used the ROS2 SLAM Toolbox. We selected a small area in the 2nd floor MAC that had several defining features to test with.</p>
         
         <div class="image-container">
-          <img src="images/odomtrajectory.png" alt="Map of Second Floor MAC between 213 and 218">
+          <img src="images/mac2ndfloormap.png" alt="Map of Second Floor MAC between 213 and 218">
           <p class="image-caption">Map of Second Floor MAC in Between 213 and 218</p>
         </div>
         
