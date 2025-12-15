@@ -159,6 +159,9 @@ class NeatoTracker(Node):
 
 
 def main(args=None):
+    """
+    Initialize, run, and cleanup
+    """
     rclpy.init()
     neato = NeatoTracker("neato1/camera/image_raw")
 
