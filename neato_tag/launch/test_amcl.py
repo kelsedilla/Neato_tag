@@ -39,9 +39,18 @@ def generate_launch_description():
             output='screen'
         ),
         Node(package='nav2_amcl',
-             executable='amcl',
-             name='amcl',
-             parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
-             output='screen'),
+            executable='amcl',
+            name='amcl',
+            parameters=[{
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'set_initial_pose': True,
+                'initial_pose.x': 0.0,      # Set to robot's starting X position
+                'initial_pose.y': 0.0,      # Set to robot's starting Y position
+                'initial_pose.z': 0.0,
+                'initial_pose.yaw': 0.0,    # Set to robot's starting orientation
+                'transform_tolerance': 0.5,
+                'tf_broadcast': False
+                }],
+            output='screen'),
         start_lifecycle_manager_built_in,
     ])
