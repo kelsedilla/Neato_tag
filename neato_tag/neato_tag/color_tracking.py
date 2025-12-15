@@ -1,13 +1,10 @@
-import datetime  # Library for handling date and time operations
+"""Color tracking code for the Neato Tag version that just makes the chaser neato wait for a bit after a tag before resuming"""
 
-# from ultralytics import YOLO  # Library for loading and using the YOLO model
 import time
-from threading import Thread
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
-import cv2
 import numpy as np
 from geometry_msgs.msg import Twist
 from neato2_interfaces.msg import Bump
@@ -61,7 +58,7 @@ class NeatoTracker(Node):
         if not self.cv_image is None:
             self.bounding_box = color_detection(self.cv_image)
 
-        # Vreate run loop
+        # Create run loop
         self.create_timer(0.1, self.run_loop)
 
     def process_image(self, msg):
@@ -142,6 +139,9 @@ class NeatoTracker(Node):
             # the chaser neato will keep turning in the last know turn direction
             # it was going in to see if it can find the runner neato
             else:
+                # If turn direction is 0, set it to 1
+                if self.turn_direction == 0.0:
+                    self.turn_direction = 1.0
                 msg_cmd.linear.x = 0.1
                 msg_cmd.angular.z = self.turn_direction * 1.0
         # If the neato shouldn't move, set linear and angular velocity to 0
