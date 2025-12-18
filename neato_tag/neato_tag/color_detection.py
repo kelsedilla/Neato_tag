@@ -1,7 +1,6 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 
 
 def color_detection(image, neato=None):
@@ -15,7 +14,7 @@ def color_detection(image, neato=None):
     if neato == "neato2":
         sample_rgb = np.array([187, 60, 89])
     else:
-        sample_rgb = np.array([187, 60, 89])
+        sample_rgb = np.array([141, 55, 77])
 
     # Compute lower and upper bounds
     lower_bound = np.maximum(sample_rgb - TOLERANCE, 0)
@@ -23,27 +22,31 @@ def color_detection(image, neato=None):
 
     # Convert image to RGB
     rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    plt.imshow(rgb_image, cmap="gray")
+    plt.title("Neon pink mask")
+    plt.axis("off")
+    plt.show()
 
     # Create the mask
     mask = cv2.inRange(rgb_image, lower_bound, upper_bound)
-    # plt.imshow(mask, cmap="gray")
-    # plt.title("Neon pink mask")
-    # plt.axis("off")
-    # plt.show()
+    plt.imshow(mask, cmap="gray")
+    plt.title("Neon pink mask")
+    plt.axis("off")
+    plt.show()
 
     # Detect edges
     edges = cv2.Canny(mask, 50, 150)
-    # plt.imshow(edges, cmap="gray")
-    # plt.title("Canny edges")
-    # plt.axis("off")
-    # plt.show()
+    plt.imshow(edges, cmap="gray")
+    plt.title("Canny edges")
+    plt.axis("off")
+    plt.show()
 
     # Close any edges
     edges_closed = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
-    # plt.imshow(edges_closed, cmap="gray")
-    # plt.title("Edges (closed)")
-    # plt.axis("off")
-    # plt.show()
+    plt.imshow(edges_closed, cmap="gray")
+    plt.title("Edges (closed)")
+    plt.axis("off")
+    plt.show()
 
     # Find contours
     contours, _ = cv2.findContours(
@@ -54,7 +57,18 @@ def color_detection(image, neato=None):
 
     # Keep contours larger than the minimum area
     contours = [c for c in contours if cv2.contourArea(c) >= MIN_AREA]
-
+    cv2.drawContours(
+        debug,
+        contours,
+        contourIdx=-1,  # draw all contours
+        color=(0, 255, 255),  # yellow for visibility
+        thickness=2,
+    )
+    plt.imshow(cv2.cvtColor(debug, cv2.COLOR_BGR2RGB))
+    plt.title("Merged bounding rectangle")
+    plt.axis("off")
+    plt.show()
+    debug = image.copy()
     # If there are still contours remaining, merge them together to form
     # a larger rectangle
     if len(contours) > 0:
@@ -82,10 +96,10 @@ def color_detection(image, neato=None):
     else:
         merged_box = None
 
-    # plt.imshow(cv2.cvtColor(debug, cv2.COLOR_BGR2RGB))
-    # plt.title("Merged bounding rectangle")
-    # plt.axis("off")
-    # plt.show()
+    plt.imshow(cv2.cvtColor(debug, cv2.COLOR_BGR2RGB))
+    plt.title("Merged bounding rectangle")
+    plt.axis("off")
+    plt.show()
     return merged_box
 
 
@@ -110,6 +124,10 @@ def convert_to_heading_angle(bounding_box, img_width, hfov=120):
 
 
 def draw_angle_markers(image, bounding_box, hfov=120):
+    """
+    Show the angle the code thinks is the angle of the center of bounding box
+    and draw on top of the bounding box for visual debugging
+    """
     if bounding_box is None:
         return image
 
@@ -135,7 +153,7 @@ def draw_angle_markers(image, bounding_box, hfov=120):
         2,
     )
 
-    angle_text = f"{center_angle:.1f}°"
+    angle_text = f"{center_angle:.1f}"
     text_x = max(center_x - 40, 0)
     text_y = max(top_y - 10, 30)
 
@@ -152,19 +170,18 @@ def draw_angle_markers(image, bounding_box, hfov=120):
     return debug
 
 
-def check_color_detection():
-    for i in range(0, 50):
-        image = cv2.imread(f"color-training-images/image{i}.png")
-        bbox = color_detection(image)
+def check_color_detection(image_file_path):
+    """
+    Function to run color detection and angle calculation on specified image
+    """
+    image = cv2.imread(image_file_path)
+    bbox = color_detection(image)
 
-        print(bbox)
+    print(bbox)
 
-        marked_image = draw_angle_markers(image, bbox)
+    marked_image = draw_angle_markers(image, bbox)
 
-        plt.imshow(cv2.cvtColor(marked_image, cv2.COLOR_BGR2RGB))
-        plt.title("Bounding box with angle markers")
-        plt.axis("off")
-        plt.show()
-
-
-# check_color_detection()
+    plt.imshow(cv2.cvtColor(marked_image, cv2.COLOR_BGR2RGB))
+    plt.title("Bounding box with angle markers")
+    plt.axis("off")
+    plt.show()
