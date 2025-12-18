@@ -100,6 +100,7 @@ Run color tracking:
 ros2 run neato_tag color_tracking_swap
 ```
 
+After doing these steps, you should be ready to play Neato Tag! Use the WASD keys to control the runner Neato.
 ---
 
 ## Neato Tag Logic
@@ -167,3 +168,20 @@ ros2 run neato_tag color_tracking_swap
 4. Retrieve contours and extract rectangles using `cv2.findContours`.
 5. Remove rectangles below a size threshold and merge the remaining ones into a single bounding box.
 6. Compute the angle of the bounding box center using the camera’s field of view (FOV).
+
+
+## Particle Filter (Not Fully Functional)
+
+1. Navigate to the Neato Tag directory and then run:
+
+```
+./particle_filter.sh
+```
+
+2. The bash script will prompt you to enter the last two digits of the IP address for each Neato.
+
+3. The script will then open multiple terminals for:
+   - Connecting to each Neato
+   - Teleoperation
+   - rviz2
+   - A particle filter instance for each Neato
