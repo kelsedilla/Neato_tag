@@ -86,7 +86,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <div class="w3-twothird">
 <h1>Localization</h1>
 <h5 class="w3-padding-32">The localization subteam unfortunately wasn’t able to get the particle filter running on our multi-Neato setup, but these would be the steps to follow to run the multi-Neato localization.</h5>
-<h5 class="w3-padding-32">The final localization system works by running a bash file “particle_filter.py”. This bash file executes 5 steps for both Neatos</h5>
+<h5 class="w3-padding-8">The final localization system works by running a bash file “particle_filter.py”. This bash file executes 5 steps for both Neatos</h5>
 <h5 class="w3-padding-8"><b>Step 1: Initiate the Neato’s using the IP address.</b></h5>
 <h5 class="w3-padding-8">The terminal asks for the last 2 to 3 digits of both Neatos. After the user inputs those digits it assigns it to the end of 192.168.16.{last digits here}. The bash file assigns both running Neatos to separate terminal tabs called “First Neato” and “Second Neato”.</h5>
 <h5 class="w3-padding-8"><b>Step 2: Initiate Multi-teleop for both Neatos.</b></h5>
@@ -96,13 +96,13 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <h5 class="w3-padding-8"><b>Step 4: Particle Filter</b></h5>
 <h5 class="w3-padding-8">The script attempts to run the particle filter for both Neatos at the same time using two separate terminal tabs called “Ros2 Particle Filter #{neato number}”. This line of code runs a built-in particle filter (AMCL) and launches the specified custom map we made in Milestone 1. </h5>
 <h5 class="w3-padding-32">When running this line of code with multiple Neatos, we get the following message:</h5>
-<h5 class="w3-padding-32" style="font-family:courier;">[amcl-2] [INFO] [1765823830.048684699] [neato2.amcl]: Message Filter dropping message: frame 'neato2base_laser_link' at time 1765823829.547 for reason 'the timestamp on the message is earlier than all the data in the transform cache'</h5>
+<h5 class="w3-padding-8" style="font-family:courier;">[amcl-2] [INFO] [1765823830.048684699] [neato2.amcl]: Message Filter dropping message: frame 'neato2base_laser_link' at time 1765823829.547 for reason 'the timestamp on the message is earlier than all the data in the transform cache'</h5>
 <h5 class="w3-padding-8">We do not know what causes this message because the particle filter works perfectly when setup for a single Neato (as shown in Milestone 2), and rviz seems to be displaying published data correctly, indicating that there is some problem with the AMCL node.</h5>
-<h5 class="w3-padding-32">Steps we took to address this error (none of which worked, unfortunately):</h5>
+<h5 class="w3-padding-8"><b>Steps we took to address this error</b> (none of which worked, unfortunately):</h5>
 <ul>
-  <h5 class="w3-padding-8">Ensure all nodes are running on clock time, as opposed to simulation time. This is the most common cause of this error in general, but did not seem to be the cause in our case.</h5>
-  <h5 class="w3-padding-8">Increase the buffer size in the AMCL node’s message queue to account for latency in the Neato’s transform publishes</h5>
-  <h5 class="w3-padding-8">Consulting course assistants and our professor</h5>
+  <li>Ensure all nodes are running on clock time, as opposed to simulation time. This is the most common cause of this error in general, but did not seem to be the cause in our case.</li>
+  <li>Increase the buffer size in the AMCL node’s message queue to account for latency in the Neato’s transform publishes</li>
+  <li>Consulting course assistants and our professor</li>
 </ul>
 <h5 class="w3-padding-8">Another step we could potentially take is re-publishing the transforms ourselves with appropriate timestamps, using a tool such as Chrony to sync the clocks between the Neato and our computers, or giving up on the AMCL particle filter entirely and using one of our own particle filters from the localization project earlier this year. Unfortunately we ran out of time to try any of these options, and had to cut our losses.</h5>
 <h5 class="w3-padding-8">On the plus side, we did learn about static vs dynamic transforms, common ways to address timing synchronization issues in ROS2, and the structure of the launch files that we use to connect to the Neatos.</h5>
