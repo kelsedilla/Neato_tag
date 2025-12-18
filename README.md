@@ -159,7 +159,7 @@ ros2 run neato_tag color_tracking_swap
 
 ## Color Detection Logic
 
-![Color detection example](docs/images/color_detection_example.png)
+![Color detection example](docs/images/example_color_detection.png)
 
 1. Get an image from the camera.
 2. Mask out all colors except those within a specified range around a neon pink color.
