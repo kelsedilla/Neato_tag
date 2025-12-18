@@ -74,9 +74,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <i class="fa fa-code w3-padding-64 w3-text-pink w3-margin-right"></i>
 </div>
 <div class="w3-twothird">
-<h1>Machine Vision</h1>
-<h5 class="w3-padding-32">Describe the technical implementation, code structure, or specific features you developed.</h5>
-<p class="w3-text-grey">You can add more detailed technical information here, including algorithms used, libraries imported, or design decisions made during development.</p>
+<h1 class="w3-padding-32">Machine Vision</h1>
+<h5 class="w3-padding-8">Our original vision (ha!) for this subteam was using an algorithm like YOLO to detect another Neato and then SORT to track it. The image data would be enhanced with LIDAR, giving us the angle and distance of the other Neato. We quickly pivoted from YOLO after looking at 50 images we had taken from a Neato camera and seeing little to no contrast between another Neato and the space it’s in. We also realized that Neatos are too short to appear on LIDAR scans, and we’d need to modify them to be taller. Our solution to both of these problems was to cover the Neatos in bright pink sticky notes to increase visibility and height.</h5>
+<h5 class="w3-padding-8">	Once we did this, we realized that we could use a simple color detection algorithm to create bounding boxes rather than training a YOLO model. We tested this model on images of the pink Neato, and it worked extremely well. We then adapted the Neato Soccer code from Day 14 to move the robot towards the center of a bounding box. When we tested this, we found that the program worked exactly the way we expected. The next step was to add SORT tracking, which predicts where the bounding box will be next. We found that our first implementation of this performed poorly. We expect that this is due to our tracker not realizing that our Neato is moving as well, which changes the position of the bounding box even though the other Neato may not be moving. Due to the high performance of our program without using SORT, we decided to not use tracking and just update the bounding box with the current camera frame.</h5>
 </div>
 </div>
 </div>
