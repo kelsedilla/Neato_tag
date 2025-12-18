@@ -35,9 +35,9 @@ Instructions to run both are provided below.
 
 ### Hardware
 Two Neato vacuum robots, each equipped with:
-- LIDAR scanner
 - Camera
 - Pink sticky notes
+- LIDAR Scanner (not required to run Neato Tag but is required for non-functional particle filter)
 
 ---
 
