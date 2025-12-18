@@ -101,6 +101,7 @@ ros2 run neato_tag color_tracking_swap
 ```
 
 After doing these steps, you should be ready to play Neato Tag! Use the WASD keys to control the runner Neato.
+
 ---
 
 ## Neato Tag Logic
