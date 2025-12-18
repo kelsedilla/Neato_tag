@@ -126,8 +126,18 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 </div>
 <div class="w3-twothird">
 <h1>Multi-Neato and Integration</h1>
-<h5 class="w3-padding-32">Describe the technical implementation, code structure, or specific features you developed.</h5>
-<p class="w3-text-grey">You can add more detailed technical information here, including algorithms used, libraries imported, or design decisions made during development.</p>
+<h5 class="w3-padding-32">The goal of the Multi Neato subteam was to learn how to launch and control two Neatos on the same device, and to set up the publishers that would allow multiple files to interact with the Neatos. We began work early, and about halfway through the project we were able to dissolve to support the other two subteams.</h5>
+<h5 class="w3-padding-8">We began by altering a simple, one Neato teleop code to control two Neatos. In order to successfully control two Neatos from one computer, each neato needs a specific namespace, which is used in all of the publishers to that Neato.</h5>
+<h5 class="w3-padding-8">For example, in our teleop code we changed:</h5>
+<h5 class="w3-padding-8" style="font-family:courier;">self.vel_pub = self.create_publisher(Twist, ‘cmd_vel', 10)</h5>
+<h5 class="w3-padding-8">to:</h5>
+<h5 class="w3-padding-8" style="font-family:courier;">self.vel_pub1 = self.create_publisher(Twist, 'namespace1\cmd_vel', 10)</h5>
+<h5 class="w3-padding-8" style="font-family:courier;">self.vel_pub2 = self.create_publisher(Twist, ‘namespace2\cmd_vel', 10)</h5>
+<h5 class="w3-padding-8">Similarly, To subscribe to information from a specific Neato, such as camera or lidar data, you need to use that Neato’s namespace as well.</h5>
+<h5 class="w3-padding-8">Once we had successfully set up multi-Neato teleop, we began working with the localization and machine vision teams to adapt their code for multiple Neatos.</h5>
+<h5 class="w3-padding-8">In our final code, the controls of the two Neatos swap when one tags the other. We achieved this by changing which namespace each control file (chase_logic.py and teleop.py) publishes to when the bump sensor is detected.</h5>
+
+
 </div>
 </div>
 </div>
