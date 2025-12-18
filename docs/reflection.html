@@ -44,7 +44,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <div class="w3-content">
 <div class="w3-twothird">
 <h1>Challenges</h1>
-<h5 class="w3-padding-32">**challenges here**</h5>
+<h5 class="w3-padding-32">We had a lot of challenges related to getting multi-Neato versions of our systems working correctly. Having to control two Neatos at once added extra steps to the development of each part of our system because not only did we need to make the system work for one Neato, after that we would have to go through a whole separate set of debugging steps to make the system work for two. This was especially a challenge for the localization subteam using the ros2 amcl package. The amcl particle filter worked just fine for one Neato, but when we tried to run it on a Neato using our multi-Neato script, it failed with timing errors. This extra step was challenging and was more of a setback that we originally assumed it would be at the beginning of the project.</h5>
+<h5 class="w3-padding-32">We had a large team of six people for this project, which introduces risks of uneven work distribution and lack of communication between team members. Our strategy of splitting into three subteams of two people worked well despite these risks. We were able to effectively parallelize our work by splitting into the localization and machine vision subteams, which are very separate tasks that work well to parallelize. One challenge we faced with this is we didn’t integrate these two systems until the very end of the project, which can be risky. A downside of subteams is it makes it more difficult to work closely with people who are not on your own subteam, and we did feel a bit of a divide between the machine vision team and the localization/integration subteam. However, we did have regular all-team meetings throughout the whole project where we shared progress updates and reshuffled tasks when necessary.</h5>
 <!-- <p class="w3-text-grey">Additional paragraphs can provide more context, technical details, challenges faced, or solutions implemented. You can include multiple paragraphs to fully explain your work.</p>
 <p class="w3-text-grey">Feel free to add code snippets, algorithms, or any other relevant information that helps document your project progress.</p> -->
 </div>
@@ -62,8 +63,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 </div>
 <div class="w3-twothird">
 <h1>What We Learned</h1>
-<h5 class="w3-padding-32">Describe the technical implementation, code structure, or specific features you developed.</h5>
-<p class="w3-text-grey">You can add more detailed technical information here, including algorithms used, libraries imported, or design decisions made during development.</p>
+<h5 class="w3-padding-32">One thing we learned in this project is that sometimes things go wrong and you need to be prepared with backup options. In our case, our localization path in this project didn’t end up working out for us, but we were saved by the fact that we initially explored two directions: localization and machine vision, so we still had the machine vision side to rely on, and were able to run Neato tag.</h5>
+<h5 class="w3-padding-32">We learned a lot about launch files through developing our multi-Neato setup and troubleshooting the multi-Neato particle filter. This was pretty interesting, since in most of our previous robotics projects we took the functionality of the Neatos and underlying ROS infrastructure for granted.</h5>
 </div>
 </div>
 </div>
@@ -73,8 +74,14 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <div class="w3-content">
 <div class="w3-twothird">
 <h1>Next Steps</h1>
-<h5 class="w3-padding-32">Share your results, observations, and analysis. Include what worked well and what challenges you encountered.</h5>
-<p class="w3-text-grey">Discuss lessons learned, future improvements, or next steps for the project.</p>
+<h5 class="w3-padding-32">Looking forward, we see a lot of ways we can continue and improve upon this project:</h5>
+<ul>
+  <li class="w3-padding-32">Fix the error we were getting when we tried to run the particle filter with two Neatos. We could do this by continuing to troubleshoot the error or by making a pivot, which could be using one of our own particle filters from the localization project earlier in the semester or pivoting to a system that doesn’t involve one Neato publishing its location to the other, such as the chaser going to the last place it saw the runner Neato if the runner goes out of sight.</li>
+  <li class="w3-padding-32">Assuming we get localization working, we would also like to combine that system with the machine vision system to create a combined behavior where the chaser chases the runner using machine vision when it's in sight, but uses localization when the runner goes out of sight.</li>
+  <li class="w3-padding-32">One thing the localization subteam wanted to do that we didn’t have time for was implementing a path planning algorithm so that the chaser Neato can follow the runner using its location. This would involve tracking where obstacles are and implementing an algorithm like A* to plan a path from where the Neato is currently to where the other Neato is.</li>
+  <li class="w3-padding-32">A next step for the machine vision subteam is more complex tracking. Instead of tracking a pink sticky note on the runner Neato, we would like to create a system that can detect a Neato based on what Neatos actually look like. This might involve a machine vision model or some other tracking algorithm. This would avoid any problems with the same color pink existing in the surrounding environment, although the increased complexity could make the system more prone to errors.</li>
+  <li class="w3-padding-32">A next step for the entire team is making the runner autonomous in addition to the chaser. Currently, only the chaser runs autonomously while the runner is teleop-ed. It would be a full autonomous tag game if we implemented both as autonomous algorithms. We could opt for a simple obstacle-avoiding behavior that runs around randomly, but it would also be an interesting challenge to make an algorithm where the runner avoids being backed into corners. We could even counter this with logic for the chaser to try to back the runner into corners.</li>
+</ul>
 </div>
 <div class="w3-third w3-center">
 <i class="fa fa-bar-chart w3-padding-64 w3-text-pink"></i>
