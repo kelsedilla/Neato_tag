@@ -21,6 +21,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-pink" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
 <a href="index.html" class="w3-bar-item w3-button w3-padding-large w3-hover-white">Home</a>
 <a href="system_architecture.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">System Architecture</a>
+<a href="reflection.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Reflection</a>
 <a href="milestone1.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Milestone 1</a>
 <a href="milestone2.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Milestone 2</a>
 </div>
@@ -48,7 +49,13 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <h5 class="w3-padding-8"><b>Localization (Tchenzie and Zara):</b> The localization subteam's goal was to create a system that allows Neatos to track their own poses within a known map and then publish those poses to each other. This allows the chaser Neato to follow the runner even when it can’t see it.</h5>
 <h5 class="w3-padding-8"><b>Multi-Neato and Integration (Brenna and Kelsey):</b> The multi-Neato subteam worked on setting up the infrastructure for two Neatos to be controlled from one laptop. After achieving this they transitioned to working on integration between multi-Neato, localization, and machine vision subteams.</h5>
 
-<h5 class="w3-padding-64">***Potentially diagram/explanation of general system architecture.***</h5>
+<h1 class="w3-padding-32">System Diagrams</h1>
+<h5 class="w3-padding-8">image here</h5>
+<h5 class="w3-padding-8">Initially we hoped to completely integrate our machine vision and localization code together with two Neatos. Unfortunately, an unsolved error on the localization side prevented us from completing this integration. The diagram above shows our initial architecture plan for the fully integrated project.</h5>
+<h5 class="w3-padding-8">Both Neato1 and Neato2 have their own particle filter node since the locations of both on the world map are needed for the chase. Both particle filters send location data of their respective Neato to the chase_logic node which calculates what direction and speed is needed for Neato1 to follow Neato2, then sends those velocity instructions to Neato1. Neato2 gets its velocity instructions from teleop, so the user can play as Neato 2 in the game of tag.</h5>
+<h5 class="w3-padding-8">image here</h5>
+<h5 class="w3-padding-8">The diagram above shows our actual code architecture in our final project. This program switches controls between the Neatos when they tag. Blue arrows and text show the system when Neato1 is the chaser, and Neato2 is the escaper. Red shows the controls swapped.</h5>
+
 
 
 <!-- <p class="w3-text-grey">Additional paragraphs can provide more context, technical details, challenges faced, or solutions implemented. You can include multiple paragraphs to fully explain your work.</p>
@@ -67,9 +74,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <i class="fa fa-code w3-padding-64 w3-text-pink w3-margin-right"></i>
 </div>
 <div class="w3-twothird">
-<h1>Machine Vision</h1>
-<h5 class="w3-padding-32">Describe the technical implementation, code structure, or specific features you developed.</h5>
-<p class="w3-text-grey">You can add more detailed technical information here, including algorithms used, libraries imported, or design decisions made during development.</p>
+<h1 class="w3-padding-32">Machine Vision</h1>
+<h5 class="w3-padding-8">Our original vision (ha!) for this subteam was using an algorithm like YOLO to detect another Neato and then SORT to track it. The image data would be enhanced with LIDAR, giving us the angle and distance of the other Neato. We quickly pivoted from YOLO after looking at 50 images we had taken from a Neato camera and seeing little to no contrast between another Neato and the space it’s in. We also realized that Neatos are too short to appear on LIDAR scans, and we’d need to modify them to be taller. Our solution to both of these problems was to cover the Neatos in bright pink sticky notes to increase visibility and height.</h5>
+<h5 class="w3-padding-8">	Once we did this, we realized that we could use a simple color detection algorithm to create bounding boxes rather than training a YOLO model. We tested this model on images of the pink Neato, and it worked extremely well. We then adapted the Neato Soccer code from Day 14 to move the robot towards the center of a bounding box. When we tested this, we found that the program worked exactly the way we expected. The next step was to add SORT tracking, which predicts where the bounding box will be next. We found that our first implementation of this performed poorly. We expect that this is due to our tracker not realizing that our Neato is moving as well, which changes the position of the bounding box even though the other Neato may not be moving. Due to the high performance of our program without using SORT, we decided to not use tracking and just update the bounding box with the current camera frame.</h5>
 </div>
 </div>
 </div>
