@@ -47,9 +47,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <h5 class="w3-padding-32">For this project, we split up into three subteams:</h5>
 <h5 class="w3-padding-8"><b>Machine Vision (Brooke and Lily):</b> The machine vision subteam was focused on developing a machine vision pipeline that allows the chaser Neato to track and chase after the runner Neato.</h5>
 <h5 class="w3-padding-8"><b>Localization (Tchenzie and Zara):</b> The localization subteam's goal was to create a system that allows Neatos to track their own poses within a known map and then publish those poses to each other. This allows the chaser Neato to follow the runner even when it can’t see it.</h5>
-<h5 class="w3-padding-32"><b>Multi-Neato and Integration (Brenna and Kelsey):</b> The multi-Neato subteam worked on setting up the infrastructure for two Neatos to be controlled from one laptop. After achieving this they transitioned to working on integration between multi-Neato, localization, and machine vision subteams.</h5>
+<h5 class="w3-padding-8"><b>Multi-Neato and Integration (Brenna and Kelsey):</b> The multi-Neato subteam worked on setting up the infrastructure for two Neatos to be controlled from one laptop. After achieving this they transitioned to working on integration between multi-Neato, localization, and machine vision subteams.</h5>
 
-<h1>System Diagrams</h1>
+<h1 class="w3-padding-32">System Diagrams</h1>
 <h5 class="w3-padding-8">image here</h5>
 <h5 class="w3-padding-8">Initially we hoped to completely integrate our machine vision and localization code together with two Neatos. Unfortunately, an unsolved error on the localization side prevented us from completing this integration. The diagram above shows our initial architecture plan for the fully integrated project.</h5>
 <h5 class="w3-padding-8">Both Neato1 and Neato2 have their own particle filter node since the locations of both on the world map are needed for the chase. Both particle filters send location data of their respective Neato to the chase_logic node which calculates what direction and speed is needed for Neato1 to follow Neato2, then sends those velocity instructions to Neato1. Neato2 gets its velocity instructions from teleop, so the user can play as Neato 2 in the game of tag.</h5>
