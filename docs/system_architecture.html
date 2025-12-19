@@ -50,10 +50,10 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <h5 class="w3-padding-8"><b>Multi-Neato and Integration (Brenna and Kelsey):</b> The multi-Neato subteam worked on setting up the infrastructure for two Neatos to be controlled from one laptop. After achieving this they transitioned to working on integration between multi-Neato, localization, and machine vision subteams.</h5>
 
 <h1 class="w3-padding-32">System Diagrams</h1>
-<h5 class="w3-padding-8">image here</h5>
+<img src="images/diagram1.jpg" alt="architecture diagram" height="600"> 
 <h5 class="w3-padding-8">Initially we hoped to completely integrate our machine vision and localization code together with two Neatos. Unfortunately, an unsolved error on the localization side prevented us from completing this integration. The diagram above shows our initial architecture plan for the fully integrated project.</h5>
 <h5 class="w3-padding-8">Both Neato1 and Neato2 have their own particle filter node since the locations of both on the world map are needed for the chase. Both particle filters send location data of their respective Neato to the chase_logic node which calculates what direction and speed is needed for Neato1 to follow Neato2, then sends those velocity instructions to Neato1. Neato2 gets its velocity instructions from teleop, so the user can play as Neato 2 in the game of tag.</h5>
-<h5 class="w3-padding-8">image here</h5>
+<img src="images/diagram2.png" alt="architecture diagram" height="600"> 
 <h5 class="w3-padding-8">The diagram above shows our actual code architecture in our final project. This program switches controls between the Neatos when they tag. In each program, there is a dictionary attribute that stores which role is which neato. Upon a bump, the values swap. Blue arrows and text show the system when Neato1 is the chaser, and Neato2 is the escaper. Red shows the controls swapped. Refer to our README in our repo for a more in-depth breakdown on our logic <a href="https://github.com/kelsedilla/Neato_tag/blob/main/README.md">(README File)</a></h5>
 
 
@@ -85,8 +85,32 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <div class="w3-content">
 <div class="w3-twothird">
 <h1>Localization</h1>
-<h5 class="w3-padding-32">Share your results, observations, and analysis. Include what worked well and what challenges you encountered.</h5>
-<p class="w3-text-grey">Discuss lessons learned, future improvements, or next steps for the project.</p>
+<h5 class="w3-padding-32">The localization subteam unfortunately wasn’t able to get the particle filter running on our multi-Neato setup, but these would be the steps to follow to run the multi-Neato localization.</h5>
+<h5 class="w3-padding-8">The final localization system works by running a bash file “particle_filter.py”. This bash file executes 5 steps for both Neatos</h5>
+<h5 class="w3-padding-8"><b>Step 1: Initiate the Neato’s using the IP address.</b></h5>
+<h5 class="w3-padding-8">The terminal asks for the last 2 to 3 digits of both Neatos. After the user inputs those digits it assigns it to the end of 192.168.16.{last digits here}. The bash file assigns both running Neatos to separate terminal tabs called “First Neato” and “Second Neato”.</h5>
+<h5 class="w3-padding-8"><b>Step 2: Initiate Multi-teleop for both Neatos.</b></h5>
+<h5 class="w3-padding-8">Now that both Neatos are running, the bash file opens a new terminal tab called “Basic Teleop” which uses ros2 run to initiate the multi-teleop script created by the multi-neato and integration subteam.</h5>
+<h5 class="w3-padding-8"><b>Step 3: Special Ros2 Config</b></h5>
+<h5 class="w3-padding-8">The bash file runs a line that sets up a special config for running RViz. We found that without this line of code, the particle filter does not work for the Neato. </h5>
+<h5 class="w3-padding-8"><b>Step 4: Particle Filter</b></h5>
+<h5 class="w3-padding-8">The script attempts to run the particle filter for both Neatos at the same time using two separate terminal tabs called “Ros2 Particle Filter #{neato number}”. This line of code runs a built-in particle filter (AMCL) and launches the specified custom map we made in Milestone 1. </h5>
+<h5 class="w3-padding-32">When running this line of code with multiple Neatos, we get the following message:</h5>
+<h5 class="w3-padding-8" style="font-family:courier;">[amcl-2] [INFO] [1765823830.048684699] [neato2.amcl]: Message Filter dropping message: frame 'neato2base_laser_link' at time 1765823829.547 for reason 'the timestamp on the message is earlier than all the data in the transform cache'</h5>
+<h5 class="w3-padding-8">We do not know what causes this message because the particle filter works perfectly when setup for a single Neato (as shown in Milestone 2), and rviz seems to be displaying published data correctly, indicating that there is some problem with the AMCL node.</h5>
+<h5 class="w3-padding-8"><b>Steps we took to address this error</b> (none of which worked, unfortunately):</h5>
+<ul>
+  <li>Ensure all nodes are running on clock time, as opposed to simulation time. This is the most common cause of this error in general, but did not seem to be the cause in our case.</li>
+  <li>Increase the buffer size in the AMCL node’s message queue to account for latency in the Neato’s transform publishes</li>
+  <li>Consulting course assistants and our professor</li>
+</ul>
+<h5 class="w3-padding-8">Another step we could potentially take is re-publishing the transforms ourselves with appropriate timestamps, using a tool such as Chrony to sync the clocks between the Neato and our computers, or giving up on the AMCL particle filter entirely and using one of our own particle filters from the localization project earlier this year. Unfortunately we ran out of time to try any of these options, and had to cut our losses.</h5>
+<h5 class="w3-padding-8">On the plus side, we did learn about static vs dynamic transforms, common ways to address timing synchronization issues in ROS2, and the structure of the launch files that we use to connect to the Neatos.</h5>
+
+
+
+
+</h5>
 </div>
 <div class="w3-third w3-center">
 <i class="fa fa-bar-chart w3-padding-64 w3-text-pink"></i>
@@ -102,15 +126,24 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 </div>
 <div class="w3-twothird">
 <h1>Multi-Neato and Integration</h1>
-<h5 class="w3-padding-32">Describe the technical implementation, code structure, or specific features you developed.</h5>
-<p class="w3-text-grey">You can add more detailed technical information here, including algorithms used, libraries imported, or design decisions made during development.</p>
+<h5 class="w3-padding-32">The goal of the Multi Neato subteam was to learn how to launch and control two Neatos on the same device, and to set up the publishers that would allow multiple files to interact with the Neatos. We began work early, and about halfway through the project we were able to dissolve to support the other two subteams.</h5>
+<h5 class="w3-padding-8">We began by altering a simple, one Neato teleop code to control two Neatos. In order to successfully control two Neatos from one computer, each neato needs a specific namespace, which is used in all of the publishers to that Neato.</h5>
+<h5 class="w3-padding-8">For example, in our teleop code we changed:</h5>
+<h5 class="w3-padding-8" style="font-family:courier;">self.vel_pub = self.create_publisher(Twist, ‘cmd_vel', 10)</h5>
+<h5 class="w3-padding-8">to:</h5>
+<h5 class="w3-padding-8" style="font-family:courier;">self.vel_pub1 = self.create_publisher(Twist, 'namespace1\cmd_vel', 10)</h5>
+<h5 class="w3-padding-8" style="font-family:courier;">self.vel_pub2 = self.create_publisher(Twist, ‘namespace2\cmd_vel', 10)</h5>
+<h5 class="w3-padding-8">Similarly, To subscribe to information from a specific Neato, such as camera or lidar data, you need to use that Neato’s namespace as well.</h5>
+<h5 class="w3-padding-8">Once we had successfully set up multi-Neato teleop, we began working with the localization and machine vision teams to adapt their code for multiple Neatos.</h5>
+<h5 class="w3-padding-8">In our final code, the controls of the two Neatos swap when one tags the other. We achieved this by changing which namespace each control file (chase_logic.py and teleop.py) publishes to when the bump sensor is detected.</h5>
+
+
 </div>
 </div>
 </div>
 
 <!-- Footer -->
 <div class="w3-container w3-black w3-center w3-opacity w3-padding-64">
-<h1 class="w3-margin w3-xlarge">Yeeto your Neato</h1>
 </div>
 
 <script>
